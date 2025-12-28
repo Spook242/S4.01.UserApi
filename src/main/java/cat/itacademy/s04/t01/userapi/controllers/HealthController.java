@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthController {
 
     @GetMapping("/health")
-    public String healthCheck() {
-        return "OK";
+    public HealthResponse healthCheck() {
+        return new HealthResponse("OK");
     }
+
 }
