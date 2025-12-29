@@ -4,6 +4,8 @@ import cat.itacademy.s04.t01.userapi.exceptions.UserNotFoundException;
 import cat.itacademy.s04.t01.userapi.model.User;
 import cat.itacademy.s04.t01.userapi.model.UserRequest;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 import java.util.ArrayList;
@@ -17,8 +19,15 @@ public class UserController {
     private static final List<User> users = new ArrayList<>();
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return users;
+    public List<User> getAllUsers(@RequestParam(required = false) String name) {
+        if (name == null) {
+            return users;
+        }
+
+        return users.stream()
+                .filter(user -> user.name().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+
     }
 
     @PostMapping
@@ -37,5 +46,4 @@ public class UserController {
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
-
 }
