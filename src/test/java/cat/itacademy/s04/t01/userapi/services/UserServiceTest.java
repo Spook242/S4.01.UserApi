@@ -70,4 +70,27 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(id));
     }
+
+    @Test
+    void getAllUsers_callsSearch_whenNameIsProvided() {
+        String searchName = "Anna";
+        when(userRepository.searchByName(searchName)).thenReturn(List.of());
+
+        userService.getAllUsers(searchName);
+
+        verify(userRepository).searchByName(searchName);
+
+        verify(userRepository, never()).findAll();
+    }
+
+    @Test
+    void getAllUsers_callsFindAll_whenNameIsBlank() {
+        String blankName = "   ";
+        when(userRepository.findAll()).thenReturn(List.of());
+
+        userService.getAllUsers(blankName);
+
+        verify(userRepository).findAll();
+        verify(userRepository, never()).searchByName(any());
+    }
 }
