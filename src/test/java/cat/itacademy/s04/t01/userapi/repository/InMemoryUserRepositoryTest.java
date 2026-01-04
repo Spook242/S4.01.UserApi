@@ -47,12 +47,12 @@ class InMemoryUserRepositoryTest {
 
     @Test
     void searchByName_returnsMatches() {
-        repository.save(new User(UUID.randomUUID(), "Anna", "a@a.com"));
-        repository.save(new User(UUID.randomUUID(), "Joan", "j@j.com"));
+        repository.save(new User(UUID.randomUUID(), "Anna", "anna@anna.com"));
+        repository.save(new User(UUID.randomUUID(), "Joan", "joan@joan.com"));
 
         List<User> results = repository.searchByName("Ann");
 
         assertEquals(1, results.size());
-        assertEquals("Anna", results.get(0).name());
+        assertEquals("Anna", results.getFirst().name());
     }
 }

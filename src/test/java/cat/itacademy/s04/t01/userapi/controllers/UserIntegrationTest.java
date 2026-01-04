@@ -40,7 +40,7 @@ class UserIntegrationTest {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newRequest)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Test User"))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
