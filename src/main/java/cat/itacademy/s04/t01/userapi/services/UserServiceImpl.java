@@ -1,6 +1,7 @@
 package cat.itacademy.s04.t01.userapi.services;
 
 import cat.itacademy.s04.t01.userapi.exceptions.UserNotFoundException;
+import cat.itacademy.s04.t01.userapi.exceptions.EmailAlreadyExistsException;
 import cat.itacademy.s04.t01.userapi.model.User;
 import cat.itacademy.s04.t01.userapi.model.UserRequest;
 import cat.itacademy.s04.t01.userapi.repository.UserRepository;
@@ -34,6 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserRequest userRequest) {
+        if (userRepository.existsByEmail(userRequest.email())) {
+            throw new EmailAlreadyExistsException("Email already in use: " + userRequest.email());
+        }
+
         User user = new User(UUID.randomUUID(), userRequest.name(), userRequest.email());
         return userRepository.save(user);
     }

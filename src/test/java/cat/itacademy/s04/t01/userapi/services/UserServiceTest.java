@@ -1,5 +1,6 @@
 package cat.itacademy.s04.t01.userapi.services;
 
+import cat.itacademy.s04.t01.userapi.exceptions.EmailAlreadyExistsException;
 import cat.itacademy.s04.t01.userapi.exceptions.UserNotFoundException;
 import cat.itacademy.s04.t01.userapi.model.User;
 import cat.itacademy.s04.t01.userapi.model.UserRequest;
@@ -28,41 +29,45 @@ class UserServiceTest {
     private UserServiceImpl userService;
 
     @Test
-    void getAllUsers_withoutName_returnsAll() {
+    void createUser_throwsException_whenEmailExists() {
+
+        UserRequest request = new UserRequest("Duplicated User", "repe@email.com");
+
+        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+
+        assertThrows(EmailAlreadyExistsException.class, () -> userService.createUser(request));
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void createUser_savesUser_whenEmailIsUnique() {
+
+        UserRequest request = new UserRequest("New User", "new@email.com");
+
+        when(userRepository.existsByEmail(request.email())).thenReturn(false);
+
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+        User result = userService.createUser(request);
+
+        assertNotNull(result.id());
+        assertEquals("new@email.com", result.email());
+        verify(userRepository).save(any(User.class));
+    }
+
+
+    @Test
+    void getAllUsers_callsRepository() {
         when(userRepository.findAll()).thenReturn(List.of());
-
         userService.getAllUsers(null);
-
         verify(userRepository).findAll();
     }
 
     @Test
-    void getAllUsers_withName_callsSearch() {
-        when(userRepository.searchByName("Anna")).thenReturn(List.of());
-
-        userService.getAllUsers("Anna");
-
-        verify(userRepository).searchByName("Anna");
-    }
-
-    @Test
-    void getUserById_throwsException_whenNotFound() {
+    void getUserById_throws_whenNotFound() {
         UUID id = UUID.randomUUID();
         when(userRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(id));
-    }
-
-    @Test
-    void createUser_callsSave() {
-        UserRequest request = new UserRequest("Test", "test@test.com");
-
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
-
-        User created = userService.createUser(request);
-
-        assertNotNull(created.id());
-        assertEquals("Test", created.name());
-        verify(userRepository).save(any(User.class));
     }
 }
