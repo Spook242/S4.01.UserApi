@@ -75,3 +75,38 @@ Aquest projecte posa un fort èmfasi en la qualitat del codi. Per executar els t
 
 ```bash
 ./mvnw test
+
+S'inclouen:
+
+Tests Unitaris: Per a la capa de Servei (mockejant el repositori).
+Tests d'Integració: Per verificar el flux complet (Controller → Service → Repository).
+Tests de Repositori: Per verificar la persistència en memòria.
+
+# Desplegament
+Per generar un executable llest per a producció:
+
+Generar l'artefacte .jar:
+
+Bash
+
+./mvnw clean package
+Executar el fitxer generat:
+
+Bash
+
+java -jar target/userapi-0.0.1-SNAPSHOT.jar
+
+#Contribucions
+Les contribucions són benvingudes! Si vols millorar el projecte:
+
+Fes un Fork del repositori.
+
+Crea una branca per a la teva funcionalitat (git checkout -b feature/nova-funcionalitat).
+
+Fes els teus canvis i assegura't que els tests passen.
+
+Fes Commit (git commit -m 'feat: afegir nova funcionalitat').
+
+Fes Push a la branca (git push origin feature/nova-funcionalitat).
+
+Obre una Pull Request.
